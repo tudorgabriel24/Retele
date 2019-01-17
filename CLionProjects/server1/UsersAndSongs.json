@@ -60,28 +60,6 @@
             "WhoVotes": [
                 {
                     "name": "tudor"
-                },
-                {
-                    "name": "gaby"
-                }
-            ],
-            "describe": "Descriere noua",
-            "link": "www.youtube.com/descriere/melodie/noua",
-            "name": "Melodie - Noua",
-            "typeOfSong": [
-                {
-                    "text": "Rock"
-                },
-                {
-                    "text": "General"
-                }
-            ],
-            "votes": 2
-        },
-        {
-            "WhoVotes": [
-                {
-                    "name": "tudor"
                 }
             ],
             "describe": "Panda panda panda",
@@ -138,47 +116,12 @@
                 }
             ],
             "votes": 1
-        },
-        {
-            "describe": "descriereeeeeee 1",
-            "link": "www.youtube.com/bldsad/dasda/d",
-            "name": "Melodie1 - test1",
-            "typeOfSong": [
-                {
-                    "text": "Pop"
-                },
-                {
-                    "text": "Rock"
-                },
-                {
-                    "text": "General"
-                }
-            ],
-            "votes": 0
-        },
-        {
-            "describe": "descriere2",
-            "link": "www.youtube.com/a-2_a/piesa",
-            "name": "Melodiee2- t",
-            "typeOfSong": [
-                {
-                    "text": "Dupstep"
-                },
-                {
-                    "text": "Clasic"
-                },
-                {
-                    "text": "General"
-                }
-            ],
-            "votes": 0
         }
     ],
     "users": [
         {
             "admin": 1,
             "logged": 0,
-            "number_of_votes": 0,
             "password": "tudor",
             "username": "tudor",
             "voting_right": 1
@@ -186,7 +129,6 @@
         {
             "admin": 1,
             "logged": 0,
-            "number_of_votes": 0,
             "password": "gaby",
             "username": "gaby",
             "voting_right": 1
@@ -194,15 +136,13 @@
         {
             "admin": 0,
             "logged": 0,
-            "number_of_votes": 0,
             "password": "user1",
             "username": "user1",
-            "voting_right": 1
+            "voting_right": 0
         },
         {
             "admin": 0,
             "logged": 0,
-            "number_of_votes": 0,
             "password": "user2",
             "username": "user2",
             "voting_right": 1
@@ -210,9 +150,22 @@
         {
             "admin": 1,
             "logged": 0,
-            "number_of_votes": 0,
             "password": "user3",
             "username": "user3",
+            "voting_right": 1
+        },
+        {
+            "admin": 0,
+            "logged": 0,
+            "password": "hman",
+            "username": "hman",
+            "voting_right": 1
+        },
+        {
+            "admin": 1,
+            "logged": 0,
+            "password": "hman2",
+            "username": "hman2",
             "voting_right": 1
         }
     ]

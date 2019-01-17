@@ -134,8 +134,6 @@ int log_search(char *user, char *pass, int &admin_req, int &vote_r, int &reg_che
     json JUsers;
     JUsers = json::parse(file);
     int JLength = JUsers["users"].size();
-    //printf("\n%s : %s",user,pass);
-    //printf("%d\n",JLength);
     for (int i = 0; i < JLength; ++i) {
         if (JUsers["users"][i]["username"] == user) {
             reg_check = 1;
@@ -219,6 +217,15 @@ void voteSong(int number, char *user, int &OK) {
                 break;
             }
     }
+    int NrUsers = JSongs["users"].size();
+    for (int i = 0; i < NrUsers; i++) {
+        if (JSongs["users"][i]["username"] == user) {
+            if (JSongs["users"][i]["voting_right"] == 0) {
+                OK = 0;
+                break;
+            } else break;
+        }
+    }
     if (OK == 1) {
 
         json temps;
@@ -228,6 +235,27 @@ void voteSong(int number, char *user, int &OK) {
         ofstream file2("../UsersAndSongs.json");
         file2 << setw(4) << JSongs << endl;
     }
+}
+
+int BanUnbanVote(char *name, int BanUnban) {
+    int OK = 0, ULength;
+    json JUSER;
+    ifstream file("../UsersAndSongs.json");
+    JUSER = json::parse(file);
+    ULength = JUSER["users"].size();
+    for (int i = 0; i < ULength; i++) {
+        if (JUSER["users"][i]["username"] == name) {
+            if (JUSER["users"][i]["voting_right"] != BanUnban) {
+                OK = 1;
+                JUSER["users"][i]["voting_right"] = BanUnban;
+                break;
+            }
+        }
+    }
+    ofstream file2("../UsersAndSongs.json");
+    file2 << setw(4) << JUSER << endl;
+    return OK;
+
 }
 
 void raspunde(void *arg) {
@@ -268,11 +296,9 @@ void raspunde(void *arg) {
                 perror("Eroare la read() de la client (admin_request).\n");
 
             }
-            printf("Am primit admin_request: %d\n", adm_req);
 
             int temp = log_search(username, password, admin, voting_right, reg_check);
 
-            printf("Account exist: %d", reg_check);
 
             if (write(tdL.cl, &reg_check, sizeof(int)) <= 0) {
                 printf("[Thread %d] ", tdL.idThread);
@@ -290,7 +316,6 @@ void raspunde(void *arg) {
                         perror("Eroare la read() de la client (admin_request).\n");
 
                     }
-                    printf("Am primit key_admin: %s\n", key);
                     if (strcmp(key, "COD198") == 0) admin = 1;
                     else admin = -1;
                     if (write(tdL.cl, &admin, sizeof(int)) <= 0) {
@@ -306,7 +331,6 @@ void raspunde(void *arg) {
                     newUser["password"] = password;
                     newUser["admin"] = admin;
                     newUser["voting_right"] = 1;
-                    newUser["number_of_votes"] = 0;
                     newUser["logged"] = 0;
                     json Json_users;
                     ifstream fisier("../UsersAndSongs.json");
@@ -316,7 +340,6 @@ void raspunde(void *arg) {
                     fisier2 << setw(4) << Json_users << endl;
 
                 }
-                printf("\n%d : %d", admin, voting_right);
             }
         } else if (cmd == 2) // LOGARE
         {
@@ -330,14 +353,12 @@ void raspunde(void *arg) {
                 perror("Eroare la read() de la client (username).\n");
 
             }
-            printf("Am primit username: %s\n", username);
             if (read(tdL.cl, &password, sizeof(char) * 15) <= 0) {
                 printf("[Thread %d]\n", tdL.idThread);
                 perror("Eroare la read() de la client (password).\n");
 
             }
             logged = log_search(username, password, admin, voting_right, reg_check);
-            if (logged == 1) printf("\nLOGAT: %d", logged);
             if (write(tdL.cl, &logged, sizeof(int)) <= 0) {
                 printf("[Thread %d] ", tdL.idThread);
                 perror("[Thread]Eroare la write() catre client.\n");
@@ -346,7 +367,7 @@ void raspunde(void *arg) {
             if (logged == 1) {
                 strcpy(UserName, username);
                 strcpy(PassWord, password);
-                printf("\n%s : %s", UserName, PassWord);
+
                 logInOn(username, password, 1);
 
 
@@ -377,7 +398,7 @@ void raspunde(void *arg) {
             perror("Eroare la read() de la client (cmd2).\n");
         }
 
-        if (cmd2 == 5) {
+        if (cmd2 == 6) {
             logged = 0;
             logInOn(UserName, PassWord, 0);
             printf("[Thread %d]Clientul a incheiat conexiunea cu serverul", tdL.idThread);
@@ -410,12 +431,8 @@ void raspunde(void *arg) {
                 printf("[Thread %d]\n", tdL.idThread);
                 perror("Eroare la read() de la client (link).\n");
             }
-            printf("\n%s : %s : %s", song, SongDescribe, typeOfSong);
-            printf("\n%s", link);
-            cout << ":" << strlen(link);
             link[strlen(link)] = '\0';
             addMusic(song, SongDescribe, typeOfSong, link, added);
-            printf("\nMelodie adaugata : %d", added);
             if (write(tdL.cl, &added, sizeof(int)) <= 0) {
                 printf("[Thread %d] ", tdL.idThread);
                 perror("[Thread]Eroare la write() catre client.\n");
@@ -433,13 +450,10 @@ void raspunde(void *arg) {
             ifstream file("../UsersAndSongs.json");
             JSONGS = json::parse(file);
             nrOfSongs = JSONGS["songs"].size();
-            printf("\nNr. de melodii: %d", nrOfSongs);
             for (int i = 0; i < nrOfSongs; i++) {
                 int j = i + 1;
                 string temp = JSONGS["songs"][i]["name"];
                 strcpy(AllSongs[j], temp.data());
-                fflush(stdout);
-                cout << j << ". " << AllSongs[j] << endl;
             }
             if (write(tdL.cl, &nrOfSongs, sizeof(int)) <= 0) {
                 printf("[Thread %d] ", tdL.idThread);
@@ -457,7 +471,6 @@ void raspunde(void *arg) {
                 printf("[Thread %d]\n", tdL.idThread);
                 perror("Eroare la read() de la client (link).\n");
             }
-            printf("\nNumarul melodiei pentru vot este: %d", number);
             number--;
             voteSong(number, UserName, OK);
 
@@ -477,7 +490,6 @@ void raspunde(void *arg) {
                 printf("[Thread %d]\n", tdL.idThread);
                 perror("Eroare la read() de la client (link).\n");
             }
-            printf("\nNumar gen melodie ales: %d", gen);
             if (gen == 0) strcpy(GenMelodie, "General");
             else if (gen == 1) strcpy(GenMelodie, "Hip-Hop");
             else if (gen == 2) strcpy(GenMelodie, "Rock");
@@ -485,17 +497,13 @@ void raspunde(void *arg) {
             else if (gen == 4) strcpy(GenMelodie, "Country");
             else if (gen == 5) strcpy(GenMelodie, "Dupstep");
             else if (gen == 6) strcpy(GenMelodie, "Clasic");
-            printf("\nGen: %s", GenMelodie);
             json JSONGS;
             ifstream file("../UsersAndSongs.json");
             JSONGS = json::parse(file);
             int JLength = JSONGS["songs"].size();
-            printf("\nNr. de melodii: %d", JLength);
             for (int i = 0; i < JLength; i++) {
                 OK = 0;
-                //cout<<"AICI: "<<i <<endl;
                 int JTYPE = JSONGS["songs"][i]["typeOfSong"].size();
-                //printf("\n%d",JTYPE);
                 if (JTYPE != 0) {
                     for (int j = 0; j < JTYPE; j++) {
 
@@ -503,21 +511,15 @@ void raspunde(void *arg) {
                             OK = 1;
                             break;
                         }
-                        //cout<< JSONGS["songs"][i]["typeOfSong"][j]["text"]<<endl;
                     }
                 }
-                cout << endl << OK;
                 if (OK == 1) {
                     nrOfSongs++;
                     vSongs[nrOfSongs] = JSONGS["songs"][i]["votes"];
                     string temp = JSONGS["songs"][i]["name"];
-                    strcpy(TopSongs[nrOfSongs], temp.data());
-                    fflush(stdout);
-                    cout << nrOfSongs << " " << TopSongs[nrOfSongs] << endl;
+                    strcpy(TopSongs[nrOfSongs],temp.data());
                 }
             }
-            for (int i = 1; i <= nrOfSongs; i++)
-                cout << i << " " << TopSongs[i] << endl;
             for (int i = 1; i < nrOfSongs; i++)
                 for (int j = i + 1; j <= nrOfSongs; j++) {
                     if (vSongs[i] < vSongs[j]) {
@@ -531,8 +533,6 @@ void raspunde(void *arg) {
                         vSongs[j] = temp2;
                     }
                 }
-            for (int i = 1; i <= nrOfSongs; i++)
-                cout << i << " " << TopSongs[i] << " " << vSongs[i] << endl;
 
             if (write(tdL.cl, &nrOfSongs, sizeof(int)) <= 0) {
                 printf("[Thread %d] ", tdL.idThread);
@@ -558,13 +558,10 @@ void raspunde(void *arg) {
             ifstream file("../UsersAndSongs.json");
             JSONGS = json::parse(file);
             nrOfSongs = JSONGS["songs"].size();
-            printf("\nNr. de melodii: %d", nrOfSongs);
             for (int i = 0; i < nrOfSongs; i++) {
                 int j = i + 1;
                 string temp = JSONGS["songs"][i]["name"];
                 strcpy(AllSongs[j], temp.data());
-                fflush(stdout);
-                cout << j << ". " << AllSongs[j] << endl;
             }
             if (write(tdL.cl, &nrOfSongs, sizeof(int)) <= 0) {
                 printf("[Thread %d] ", tdL.idThread);
@@ -586,12 +583,193 @@ void raspunde(void *arg) {
                 printf("[Thread %d]\n", tdL.idThread);
                 perror("Eroare la read() de la client (link).\n");
             }
-            cout << number << " " << comment << endl;
             int nrComments = JSONGS["songs"][number - 1]["comments"].size();
             JSONGS["songs"][number - 1]["comments"][nrComments]["text"] = comment;
             JSONGS["songs"][number - 1]["comments"][nrComments]["name"] = UserName;
             ofstream file2("../UsersAndSongs.json");
             file2 << setw(4) << JSONGS << endl;
+        } else if (cmd2 == 5) {
+            int nrOfSongs = 0, number;
+            char AllSongs[100][255];
+            bzero(AllSongs, 25500);
+            json JSONGS;
+            ifstream file("../UsersAndSongs.json");
+            JSONGS = json::parse(file);
+            nrOfSongs = JSONGS["songs"].size();
+            for (int i = 0; i < nrOfSongs; i++) {
+                int j = i + 1;
+                string temp = JSONGS["songs"][i]["name"];
+                strcpy(AllSongs[j], temp.data());
+            }
+            if (write(tdL.cl, &nrOfSongs, sizeof(int)) <= 0) {
+                printf("[Thread %d] ", tdL.idThread);
+                perror("[Thread]Eroare la write() catre client (nrOfSongs).\n");
+            } else
+                printf("[Thread %d]Mesajul a fost trasmis cu succes (nrOfSongs2).\n", tdL.idThread);
+
+            if (write(tdL.cl, &AllSongs, sizeof(char) * 25500) <= 0) {
+                printf("[Thread %d] ", tdL.idThread);
+                perror("[Thread]Eroare la write() catre client (AllSongs).\n");
+            } else
+                printf("[Thread %d]Mesajul a fost trasmis cu succes (Top).\n", tdL.idThread);
+
+            if (read(tdL.cl, &number, sizeof(int)) <= 0) {
+                printf("[Thread %d]\n", tdL.idThread);
+                perror("Eroare la read() de la client (link).\n");
+            }
+            // nume , descriere , link
+            char nameSongC[255], describeSongC[1001], linkSongC[255];
+            string nameSong = JSONGS["songs"][number - 1]["name"];
+            strcpy(nameSongC, nameSong.data());
+
+            string describeSong = JSONGS["songs"][number - 1]["describe"];
+            strcpy(describeSongC, describeSong.data());
+
+            string linkSong = JSONGS["songs"][number - 1]["link"];
+            strcpy(linkSongC, linkSong.data());
+
+            // nr voturi, si cine a votat
+            int nrOfVotes;
+            nrOfVotes = JSONGS["songs"][number - 1]["votes"];
+            char whoVotesC[100][15];
+
+            for (int i = 0; i < nrOfVotes; i++) {
+                string whoVotes = JSONGS["songs"][number - 1]["WhoVotes"][i]["name"];
+                strcpy(whoVotesC[i + 1], whoVotes.data());
+            }
+
+            // commentarii
+            int nrOfComments;
+            nrOfComments = JSONGS["songs"][number - 1]["comments"].size();
+            char TextCommentsC[100][500], NameCommentsC[100][15];
+            for (int i = 0; i < nrOfComments; i++) {
+                string TextComments = JSONGS["songs"][number - 1]["comments"][i]["text"];
+                strcpy(TextCommentsC[i + 1], TextComments.data());
+
+                string NameComments = JSONGS["songs"][number - 1]["comments"][i]["name"];
+                strcpy(NameCommentsC[i + 1], NameComments.data());
+            }
+
+            // genuri muzicale
+            int nrOfTypes;
+            nrOfTypes = JSONGS["songs"][number - 1]["typeOfSong"].size();
+            char NumberOfTypesC[8][8];
+            for (int i = 0; i < nrOfTypes; i++) {
+                string NumberOfTypes = JSONGS["songs"][number - 1]["typeOfSong"][i]["text"];
+                strcpy(NumberOfTypesC[i + 1], NumberOfTypes.data());
+            }
+
+            // trimitere catre client
+            if (write(tdL.cl, &nameSongC, sizeof(char) * 255) <= 0) {
+                printf("[Thread %d] ", tdL.idThread);
+                perror("[Thread]Eroare la write() catre client (NameSongC).\n");
+            } else
+                printf("[Thread %d]Mesajul a fost trasmis cu succes (NameSongC).\n", tdL.idThread);
+            if (write(tdL.cl, &describeSongC, sizeof(char) * 1001) <= 0) {
+                printf("[Thread %d] ", tdL.idThread);
+                perror("[Thread]Eroare la write() catre client (describeSongC).\n");
+            } else
+                printf("[Thread %d]Mesajul a fost trasmis cu succes (describeSongC).\n", tdL.idThread);
+            if (write(tdL.cl, &linkSongC, sizeof(char) * 255) <= 0) {
+                printf("[Thread %d] ", tdL.idThread);
+                perror("[Thread]Eroare la write() catre client (linkSongC.\n");
+            } else
+                printf("[Thread %d]Mesajul a fost trasmis cu succes (linkSongC).\n", tdL.idThread);
+            if (write(tdL.cl, &nrOfVotes, sizeof(int)) <= 0) {
+                printf("[Thread %d] ", tdL.idThread);
+                perror("[Thread]Eroare la write() catre client (nrOfVotes).\n");
+            } else
+                printf("[Thread %d]Mesajul a fost trasmis cu succes (nrOfVotes).\n", tdL.idThread);
+            if (write(tdL.cl, &whoVotesC, sizeof(char) * 1500) <= 0) {
+                printf("[Thread %d] ", tdL.idThread);
+                perror("[Thread]Eroare la write() catre client (whoVotesC).\n");
+            } else
+                printf("[Thread %d]Mesajul a fost trasmis cu succes (whoVotesC).\n", tdL.idThread);
+            if (write(tdL.cl, &nrOfComments, sizeof(int)) <= 0) {
+                printf("[Thread %d] ", tdL.idThread);
+                perror("[Thread]Eroare la write() catre client (nrOfComments).\n");
+            } else
+                printf("[Thread %d]Mesajul a fost trasmis cu succes (nrOfComments).\n", tdL.idThread);
+            if (write(tdL.cl, &TextCommentsC, sizeof(char) * 50000) <= 0) {
+                printf("[Thread %d] ", tdL.idThread);
+                perror("[Thread]Eroare la write() catre client (TextCommentsC).\n");
+            } else
+                printf("[Thread %d]Mesajul a fost trasmis cu succes (TextCommentsC).\n", tdL.idThread);
+            if (write(tdL.cl, &NameCommentsC, sizeof(char) * 1500) <= 0) {
+                printf("[Thread %d] ", tdL.idThread);
+                perror("[Thread]Eroare la write() catre client (NameCommentsC).\n");
+            } else
+                printf("[Thread %d]Mesajul a fost trasmis cu succes (NameCommentsC).\n", tdL.idThread);
+            if (write(tdL.cl, &nrOfTypes, sizeof(int)) <= 0) {
+                printf("[Thread %d] ", tdL.idThread);
+                perror("[Thread]Eroare la write() catre client (nrOfTypes).\n");
+            } else
+                printf("[Thread %d]Mesajul a fost trasmis cu succes (nrOfTypes).\n", tdL.idThread);
+            if (write(tdL.cl, &NumberOfTypesC, sizeof(char) * 64) <= 0) {
+                printf("[Thread %d] ", tdL.idThread);
+                perror("[Thread]Eroare la write() catre client (NumberOfTypesC).\n");
+            } else
+                printf("[Thread %d]Mesajul a fost trasmis cu succes (NumberOfTypesC).\n", tdL.idThread);
+
+        } else if (cmd2 == 7) {
+            char VoteBanUser[15];
+            int OK;
+            if (read(tdL.cl, &VoteBanUser, sizeof(char) * 15) <= 0) {
+                printf("[Thread %d]\n", tdL.idThread);
+                perror("Eroare la read() de la client (link).\n");
+            }
+            OK = BanUnbanVote(VoteBanUser, 0);
+            if (write(tdL.cl, &OK, sizeof(int)) <= 0) {
+                printf("[Thread %d] ", tdL.idThread);
+                perror("[Thread]Eroare la write() catre client (VoteBan).\n");
+            } else
+                printf("[Thread %d]Mesajul a fost trasmis cu succes (VoteBan).\n", tdL.idThread);
+        } else if (cmd2 == 8) {
+            char VoteUnBanUser[15];
+            int OK;
+            if (read(tdL.cl, &VoteUnBanUser, sizeof(char) * 15) <= 0) {
+                printf("[Thread %d]\n", tdL.idThread);
+                perror("Eroare la read() de la client (link).\n");
+            }
+            OK = BanUnbanVote(VoteUnBanUser, 1);
+            if (write(tdL.cl, &OK, sizeof(int)) <= 0) {
+                printf("[Thread %d] ", tdL.idThread);
+                perror("[Thread]Eroare la write() catre client (VoteUnBan).\n");
+            } else
+                printf("[Thread %d]Mesajul a fost trasmis cu succes (VoteUnBan).\n", tdL.idThread);
+        } else if (cmd2 == 9) {
+            int nrOfSongs = 0;
+            char AllSongs[100][255], comment[500];
+            bzero(AllSongs, 25500);
+            json JDelete;
+            ifstream file("../UsersAndSongs.json");
+            JDelete = json::parse(file);
+            nrOfSongs = JDelete["songs"].size();
+            for (int i = 0; i < nrOfSongs; i++) {
+                int j = i + 1;
+                string temp = JDelete["songs"][i]["name"];
+                strcpy(AllSongs[j], temp.data());
+            }
+            if (write(tdL.cl, &nrOfSongs, sizeof(int)) <= 0) {
+                printf("[Thread %d] ", tdL.idThread);
+                perror("[Thread]Eroare la write() catre client (nrOfSongs).\n");
+            } else
+                printf("[Thread %d]Mesajul a fost trasmis cu succes (nrOfSongs2).\n", tdL.idThread);
+
+            if (write(tdL.cl, &AllSongs, sizeof(char) * 25500) <= 0) {
+                printf("[Thread %d] ", tdL.idThread);
+                perror("[Thread]Eroare la write() catre client (AllSongs).\n");
+            } else
+                printf("[Thread %d]Mesajul a fost trasmis cu succes (Top).\n", tdL.idThread);
+            int number;
+            if (read(tdL.cl, &number, sizeof(int)) <= 0) {
+                printf("[Thread %d]\n", tdL.idThread);
+                perror("Eroare la read() de la client (link).\n");
+            }
+
+            JDelete["songs"].erase(number - 1);
+            ofstream file2("../UsersAndSongs.json");
+            file2 << setw(4) << JDelete << endl;
         }
     }
 

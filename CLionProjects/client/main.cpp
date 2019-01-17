@@ -64,16 +64,15 @@ int main(int argc, char *argv[]) {
     int admin_right, voting_right;
     while (logged == 0) {
         while (1) {
-            printf("\nMENIU:");
-            printf("\n1. Inregistrare user / admin");
-            printf("\n2. Logare");
-            printf("\n3. Quit");
-            printf("\nIntroduceti numarul comenzii: ");
+            cout<<"\nMENIU:";
+            cout<<"\n1. Inregistrare user / admin";
+            cout<<"\n2. Logare";
+            cout<<"\n3. Quit";
+            cout<<"\nIntroduceti numarul comenzii: ";
             cin >> comanda;
             fflush(stdout);
-            printf("[client] Am citit %d\n", comanda);
             if (comanda >= 1 && comanda <= 3) break;
-            else printf("Numarul comenzii introdus nu exista in meniu. Introduceti alt numar.");
+            else cout<<"Numarul comenzii introdus nu exista in meniu. Introduceti alt numar.";
         }
 
         /* trimiterea mesajului la server */
@@ -90,14 +89,13 @@ int main(int argc, char *argv[]) {
             if (comanda == 1) {
                 int admin_req, ac_exist, ok_admin = 0;
                 char username[15], password[15];
-                printf("\nIntroduceti urmatoarele date fara spatii: ");
-                printf("\nIntroduceti username-ul dorit: ");
+                cout<<"\nIntroduceti urmatoarele date fara spatii: ";
+                cout<<"\nIntroduceti username-ul dorit: ";
                 cin >> username;
-                printf("\nIntroduceti parola dorita: ");
+                cout<<"\nIntroduceti parola dorita: ";
                 cin >> password;
-                printf("\nDoriti drepturi de admin?(0/1): ");
+                cout<<"\nDoriti drepturi de admin?(0/1): ";
                 cin >> admin_req;
-                //printf("%s : %s :%d",username,password,admin_req);
 
                 //TRIMITEM USERNAME
                 if (write(sd, &username, sizeof(char) * 15) <= 0) {
@@ -122,7 +120,7 @@ int main(int argc, char *argv[]) {
                 if (ac_exist == 0) {
                     if (admin_req == 1) {
                         char key[15];
-                        printf("\nIntroduceti cod cheie (admin, max. 15 caractere): ");
+                        cout<<"\nIntroduceti cod cheie (admin, max. 15 caractere): ";
                         cin >> key;
                         if (write(sd, &key, sizeof(char) * 15) <= 0) {
                             perror("[client]Eroare la write() spre server (admin_request).\n");
@@ -132,18 +130,18 @@ int main(int argc, char *argv[]) {
                             perror("[client]Eroare la read() de la server.\n");
                             return errno;
                         }
-                        if (ok_admin == 1) printf("\nAti introdus codul corect si v-ati inregistrat cu succes!");
-                        else printf("\nCodul introdus este gresit!\n");
-                    } else printf("\nContul a fost creat cu succes!");
-                } else printf("\nAcest cont exista deja, introduceti alt username!");
+                        if (ok_admin == 1) cout<<"\nAti introdus codul corect si v-ati inregistrat cu succes!";
+                        else cout<<"\nCodul introdus este gresit!\n";
+                    } else cout<<"\nContul a fost creat cu succes!";
+                } else cout<<"\nAcest cont exista deja, introduceti alt username!";
             } else if (comanda == 2) {
                 char username[15], password[15];
                 bzero(username, 15);
                 bzero(password, 15);
-                printf("\nIntroduceti urmatoarele date fara spatii: ");
-                printf("\nUsername: ");
+                cout<<"\nIntroduceti urmatoarele date fara spatii: ";
+                cout<<"\nUsername: ";
                 cin >> username;
-                printf("\nPassword: ");
+                cout<<"\nPassword: ";
                 cin >> password;
 
                 if (write(sd, &username, sizeof(char) * 15) <= 0) {
@@ -159,7 +157,6 @@ int main(int argc, char *argv[]) {
                     perror("[client]Eroare la read() de la server.\n");
                     return errno;
                 }
-                printf("\n%d", logged);
                 if (logged == 1) {
                     if (read(sd, &admin_right, sizeof(int)) < 0) {
                         perror("[client]Eroare la read() de la server.\n");
@@ -169,42 +166,31 @@ int main(int argc, char *argv[]) {
                         perror("[client]Eroare la read() de la server.\n");
                         return errno;
                     }
-                    printf("\nBine ai venit %s!", username);
-                    printf("\nSTATUS: \nadmin = %d \ndrept de vot = %d", admin_right, voting_right);
-                } else printf("\nAcest cont nu exista, ati introdus datele gresit sau este logat!");
+                    cout<<"\nBine ai venit "<<username<<"!";
+                } else cout<<"\nAcest cont nu exista, ati introdus datele gresit sau este logat!";
             }
         }
-
-
-        /* citirea raspunsului dat de server
-           (apel blocant pina cind serverul raspunde) */
-        /* if (read(sd, &comanda, sizeof(int)) < 0) {
-             perror("[client]Eroare la read() de la server.\n");
-             return errno;
-         }
-
-         printf("[client]Mesajul primit este: %d\n", comanda);*/
     }
     while (logged == 1) {
         int comanda2;
-        printf("\nMENIU:");
-        printf("\n1. Add Song - adauga o melodie");
-        printf("\n2. Vote Song - voteaza o melodie");
-        printf("\n3. Top Songs general sau pe genuri muzicale");
-        printf("\n4. Post Comment - posteaza un comentariu legat de o melodie");
-        printf("\n5. Quit");
+        cout<<"\nMENIU:";
+        cout<<"\n1. Add Song - adauga o melodie";
+        cout<<"\n2. Vote Song - voteaza o melodie";
+        cout<<"\n3. Top Songs general sau pe genuri muzicale";
+        cout<<"\n4. Post Comment - posteaza un comentariu legat de o melodie";
+        cout<<"\n5. Status songs";
+        cout<<"\n6. Quit";
         if (admin_right == 1) {
-            printf("\n6. Ban Vote - restrictioneaza votul unui user");
-            printf("\n7. UnBan Vote - scoate restrictia de a vota a unui user");
-            printf("\n8. Delete Song - sterge o melodie");
+            cout<<"\n7. Ban Vote - restrictioneaza votul unui user";
+            cout<<"\n8. UnBan Vote - scoate restrictia de a vota a unui user";
+            cout<<"\n9. Delete Song - sterge o melodie";
         }
         while (1) {
-            printf("\nIntroduceti numarul comenzii: ");
+            cout<<"\nIntroduceti numarul comenzii: ";
             cin >> comanda2;
             fflush(stdout);
-            printf("[client] Am citit %d\n", comanda2);
-            if ((comanda2 >= 1 && comanda2 <= 5) || (comanda2 >= 1 && comanda2 <= 8 && admin_right == 1)) break;
-            else printf("Numarul comenzii introdus nu exista in meniu. Introduceti alt numar.");
+            if ((comanda2 >= 1 && comanda2 <= 6) || (comanda2 >= 1 && comanda2 <= 9 && admin_right == 1)) break;
+            else cout<<"Numarul comenzii introdus nu exista in meniu. Introduceti alt numar.";
         }
 
         if (write(sd, &comanda2, sizeof(int)) <= 0) {
@@ -212,7 +198,7 @@ int main(int argc, char *argv[]) {
             return errno;
         }
 
-        if (comanda2 == 5) {
+        if (comanda2 == 6) {
             break;
         } else if (comanda2 == 1) {
             char song[255], SongDescribe[1001], typeOfSong[50], link[255];
@@ -225,27 +211,27 @@ int main(int argc, char *argv[]) {
                 perror("[client]Eroare la read() de la server.\n");
                 return errno;
             }
-            printf("\nComanda1: %d", comanda2);
-            printf("\nIntroduceti numele melodiei: ");
+            cout<<"\nIntroduceti numele melodiei: ";
             fflush(stdout);
             if (read(0, &song, 255) <= 0) {
                 printf("\n[client] Eroare citire nume melodie de la tastatura.");
             }
-            printf("\nIntroduceti o descriere melodiei: ");
+            cout<<"\nIntroduceti o descriere melodiei: ";
             fflush(stdout);
             if (read(0, &SongDescribe, 1001) <= 0) {
                 printf("\n[client] Eroare citire descrierii melodiei de la tastatura.");
             }
-            printf("\nGenuri disponibile: Hip-Hop Rock Pop Country Dupstep Clasic ");
+            cout<<"\nGenuri disponibile: Hip-Hop Rock Pop Country Dupstep Clasic ";
             fflush(stdout);
-            printf("\nIntroduceti genurile melodiei (cu spatii intre ele exact ca mai sus): ");
+            cout<<"\nExemplu: Hip-Hop Pop Clasic";
+            cout<<"\nIntroduceti genurile melodiei (cu spatii intre ele exact ca mai sus): ";
             fflush(stdout);
             bzero(typeOfSong, 50);
             if (read(0, &typeOfSong, 50) <= 0) {
                 printf("\n[client] Eroare la citirea genurile melodiei de la tastatura.");
             }
 
-            printf("\nIntroduceti un link catre un site unde se poate asculta melodia (ex:youtube): ");
+            cout<<"\nIntroduceti un link catre un site unde se poate asculta melodia (ex:youtube): ";
             fflush(stdout);
             if (read(0, &link, 255) <= 0) {
                 printf("\n[client] Eroare la citirea link-ului melodiei de la tastatura.");
@@ -270,12 +256,11 @@ int main(int argc, char *argv[]) {
                 perror("[client]Eroare la write() spre server (comanda2).\n");
                 return errno;
             }
-            printf("%\n %s : %s : %s : %s", song, SongDescribe, typeOfSong, link);
             if (read(sd, &songAdded, sizeof(int)) < 0) {
                 perror("[client]Eroare la read() de la server.\n");
                 return errno;
             }
-            printf("\nMelodie adaugata: %d", songAdded);
+            cout<<"\nMelodie adaugata: "<<songAdded;
         } else if (comanda2 == 2) {
             int songsLength;
             char nameS[100][255];
@@ -289,14 +274,14 @@ int main(int argc, char *argv[]) {
                 perror("[client]Eroare la read() de la server.\n");
                 return errno;
             }
+            cout<<endl<<"Melodii: "<<endl;
             for (int i = 1; i <= songsLength; i++) {
                 cout << i << ". " << nameS[i] << endl;
             }
             int number;
-            printf("\nIntroduceti numarul melodiei pe care doriti sa o votati: ");
+            cout<<"\nIntroduceti numarul melodiei pe care doriti sa o votati: ";
             fflush(stdout);
             cin >> number;
-            printf("\n%d", number);
             if (write(sd, &number, sizeof(int)) <= 0) {
                 perror("[client]Eroare la write() spre server (comanda2).\n");
                 return errno;
@@ -306,24 +291,23 @@ int main(int argc, char *argv[]) {
                 perror("[client]Eroare la read() de la server.\n");
                 return errno;
             }
-            printf("\n%d", OK_vot);
         } else if (comanda2 == 3) {
             int gen, Len, vSongs[100];
             char TopSongs[100][255];
             while (1) {
 
-                printf("\nTop-uri muzicale: ");
-                printf("\n0. General");
-                printf("\n1. Hip-Hop");
-                printf("\n2. Rock");
-                printf("\n3. Pop");
-                printf("\n4. Country");
-                printf("\n5. Dupstep");
-                printf("\n6. Clasic");
-                printf("\nIntroduceti numarul topului dorit: ");
+                cout<<"\nTop-uri muzicale: ";
+                cout<<"\n0. General";
+                cout<<"\n1. Hip-Hop";
+                cout<<"\n2. Rock";
+                cout<<"\n3. Pop";
+                cout<<"\n4. Country";
+                cout<<"\n5. Dupstep";
+                cout<<"\n6. Clasic";
+                cout<<"\nIntroduceti numarul topului dorit: ";
                 cin >> gen;
                 if (gen >= 0 && gen <= 6) break;
-                else printf("\nIntroduceti unul din numerele de mai sus!");
+                else cout<<"\nIntroduceti unul din numerele de mai sus!";
             }
             if (write(sd, &gen, sizeof(int)) <= 0) {
                 perror("[client]Eroare la write() spre server (comanda2).\n");
@@ -377,14 +361,173 @@ int main(int argc, char *argv[]) {
             comment[strlen(comment) - 1] = '\0';
 
             if (write(sd, &number, sizeof(int)) <= 0) {
-                perror("[client]Eroare la write() spre server (comanda2).\n");
+                perror("[client]Eroare la write() spre server (number).\n");
                 return errno;
             }
             if (write(sd, &comment, sizeof(char) * 500) <= 0) {
-                perror("[client]Eroare la write() spre server (comanda2).\n");
+                perror("[client]Eroare la write() spre server (comment).\n");
                 return errno;
             }
 
+        } else if (comanda2 == 5) {
+            int nrOfSongs = 0, number;
+            char AllSongs[100][255];
+            bzero(AllSongs, 25500);
+            if (read(sd, &nrOfSongs, sizeof(int)) < 0) {
+                perror("[client]Eroare la read() de la server.\n");
+                return errno;
+            }
+            if (read(sd, &AllSongs, sizeof(char) * 25500) < 0) {
+                perror("[client]Eroare la read() de la server.\n");
+                return errno;
+            }
+            cout << "Alegeti o melodie pentru a comenta: " << endl;
+            for (int i = 1; i <= nrOfSongs; i++)
+                cout << i << ". " << AllSongs[i] << endl;
+            cout<<"Introduceti numarul melodiei: ";
+            cin>>number;
+            if (write(sd, &number, sizeof(int)) <= 0) {
+                perror("[client]Eroare la write() spre server (number2).\n");
+                return errno;
+            }
+            char nameSong[255], describeSong[1001], linkSong[255], whoVotes[100][15];
+            char TextComments[100][500], NameComments[100][15], NumberOfTypes[8][8];
+            int nrOfVotes, nrOfComments, nrOfTypes;
+            bzero(nameSong, 255);
+            bzero(describeSong, 1001);
+            bzero(linkSong, 255);
+            bzero(whoVotes, 1500);
+            bzero(TextComments, 50000);
+            bzero(NameComments, 1500);
+            bzero(NumberOfTypes, 64);
+
+            // primeste de la server
+            if (read(sd, &nameSong, sizeof(char) * 255) < 0) {
+                perror("[client]Eroare la read() de la server.\n");
+                return errno;
+            }
+            if (read(sd, &describeSong, sizeof(char) * 1001) < 0) {
+                perror("[client]Eroare la read() de la server.\n");
+                return errno;
+            }
+            if (read(sd, &linkSong, sizeof(char) * 255) < 0) {
+                perror("[client]Eroare la read() de la server.\n");
+                return errno;
+            }
+            if (read(sd, &nrOfVotes, sizeof(int)) < 0) {
+                perror("[client]Eroare la read() de la server.\n");
+                return errno;
+            }
+            if (read(sd, &whoVotes, sizeof(char) * 1500) < 0) {
+                perror("[client]Eroare la read() de la server.\n");
+                return errno;
+            }
+            if (read(sd, &nrOfComments, sizeof(int)) < 0) {
+                perror("[client]Eroare la read() de la server.\n");
+                return errno;
+            }
+            if (read(sd, &TextComments, sizeof(char) * 50000) < 0) {
+                perror("[client]Eroare la read() de la server.\n");
+                return errno;
+            }
+            if (read(sd, &NameComments, sizeof(char) * 1500) < 0) {
+                perror("[client]Eroare la read() de la server.\n");
+                return errno;
+            }
+            if (read(sd, &nrOfTypes, sizeof(int)) < 0) {
+                perror("[client]Eroare la read() de la server.\n");
+                return errno;
+            }
+            if (read(sd, &NumberOfTypes, sizeof(char) * 64) < 0) {
+                perror("[client]Eroare la read() de la server.\n");
+                return errno;
+            }
+
+            cout << endl;
+            cout << "Numele melodiei: " << nameSong << endl;
+            cout << "Descriere: " << describeSong << endl;
+            cout << "Link: " << linkSong << endl;
+            cout << "Numar de voturi: " << nrOfVotes << endl;
+            if (nrOfVotes != 0) cout << "Userii care au votat: ";
+            for (int i = 1; i <= nrOfVotes; i++) cout << whoVotes[i] << " ";
+            if (nrOfVotes != 0) cout << endl;
+            cout << "Gen muzical: ";
+            for (int i = 1; i < nrOfTypes; i++) cout << NumberOfTypes[i] << " ";
+            cout << endl;
+            cout << "Numar de comentarii: " << nrOfComments << endl;
+            if (nrOfComments != 0) {
+                cout << "Comentarii:" << endl;
+                for (int i = 1; i <= nrOfComments; i++) {
+                    cout<<"User: "<<NameComments[i]<<endl;
+                    cout<<"Text: "<<TextComments[i]<<endl;
+                }
+            }
+        }
+        else if(comanda2==7)
+        {
+            char VoteBanUser[15];
+            int OK;
+            cout<<"Introduceti username: ";
+            cin>>VoteBanUser;
+            VoteBanUser[strlen(VoteBanUser)]='\0';
+            if (write(sd, &VoteBanUser, sizeof(char)*15) <= 0) {
+                perror("[client]Eroare la write() spre server (number2).\n");
+                return errno;
+            }
+            if (read(sd, &OK, sizeof(int)) < 0) {
+                perror("[client]Eroare la read() de la server.\n");
+                return errno;
+            }
+            if(OK==1) cout<<"Ati restrictionat dreptul de vot al user-ului "<<VoteBanUser<<"!";
+            else cout<<"Nu puteti restrictiona dreptul de vot al user-ului "<<VoteBanUser<<"!";
+        }
+        else if(comanda2==8)
+        {
+            char VoteUnBanUser[15];
+            int OK;
+            cout<<"Introduceti username: ";
+            cin>>VoteUnBanUser;
+            VoteUnBanUser[strlen(VoteUnBanUser)]='\0';
+            if (write(sd, &VoteUnBanUser, sizeof(char)*15) <= 0) {
+                perror("[client]Eroare la write() spre server (number2).\n");
+                return errno;
+            }
+            if (read(sd, &OK, sizeof(int)) < 0) {
+                perror("[client]Eroare la read() de la server.\n");
+                return errno;
+            }
+            if(OK==1) cout<<"Ati redat dreptul de vot al user-ului "<<VoteUnBanUser<<"!";
+            else cout<<"User-ul "<<VoteUnBanUser<<" nu are votul restrictionat!";
+        }
+        else if(comanda2==9)
+        {
+            int nrOfSongs = 0, number;
+            char AllSongs[100][255], comment[500];
+            bzero(AllSongs, 25500);
+            bzero(comment, 500);
+            if (read(sd, &nrOfSongs, sizeof(int)) < 0) {
+                perror("[client]Eroare la read() de la server.\n");
+                return errno;
+            }
+            if (read(sd, &AllSongs, sizeof(char) * 25500) < 0) {
+                perror("[client]Eroare la read() de la server.\n");
+                return errno;
+            }
+            cout << "Alegeti o melodie pentru a o sterge: " << endl;
+            for (int i = 1; i <= nrOfSongs; i++) {
+                cout << i << ". " << AllSongs[i] << endl;
+            }
+            while (1) {
+                cout << "Introduceti numarul unei melodii: ";
+                cin >> number;
+                fflush(stdout);
+                if (number >= 1 && number <= nrOfSongs) break;
+                else cout << "Piesa aleasa nu exista! Alegeti alta!";
+            }
+            if (write(sd, &number, sizeof(int)) <= 0) {
+                perror("[client]Eroare la write() spre server (number).\n");
+                return errno;
+            }
         }
 
     }
