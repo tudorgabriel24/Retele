@@ -1,0 +1,219 @@
+{
+    "songs": [
+        {
+            "WhoVotes": [
+                {
+                    "name": "tudor"
+                },
+                {
+                    "name": "gaby"
+                }
+            ],
+            "comments": [
+                {
+                    "name": "tudor",
+                    "text": "asd"
+                },
+                {
+                    "name": "tudor",
+                    "text": "Imi place melodia ta, continua cu asta ca te descurci."
+                },
+                {
+                    "name": "gaby",
+                    "text": "Era timpu sa scoti o piesa noua"
+                }
+            ],
+            "describe": "Descrierea mea.",
+            "link": "www.youtube.com",
+            "name": "Smiley - Confesiune",
+            "typeOfSong": [
+                {
+                    "text": "Pop"
+                },
+                {
+                    "text": "General"
+                }
+            ],
+            "votes": 2
+        },
+        {
+            "comments": [
+                {
+                    "name": "tudor",
+                    "text": "COMANTARIUUUU LUUUUNG"
+                }
+            ],
+            "describe": "Plec pe marte descriere",
+            "link": "www.youtube.com/song",
+            "name": "Smiley - Plec pe marte",
+            "typeOfSong": [
+                {
+                    "text": "Pop"
+                },
+                {
+                    "text": "General"
+                }
+            ],
+            "votes": 0
+        },
+        {
+            "WhoVotes": [
+                {
+                    "name": "tudor"
+                },
+                {
+                    "name": "gaby"
+                }
+            ],
+            "describe": "Descriere noua",
+            "link": "www.youtube.com/descriere/melodie/noua",
+            "name": "Melodie - Noua",
+            "typeOfSong": [
+                {
+                    "text": "Rock"
+                },
+                {
+                    "text": "General"
+                }
+            ],
+            "votes": 2
+        },
+        {
+            "WhoVotes": [
+                {
+                    "name": "tudor"
+                }
+            ],
+            "describe": "Panda panda panda",
+            "link": "youtube.com/panda/panda/2",
+            "name": "Designer - Panda",
+            "typeOfSong": [
+                {
+                    "text": "Hip-Hop"
+                },
+                {
+                    "text": "General"
+                }
+            ],
+            "votes": 1
+        },
+        {
+            "comments": [
+                {
+                    "name": "gaby",
+                    "text": "Receeee e foarte receee"
+                }
+            ],
+            "describe": "descriere descriere descriere",
+            "link": "www.youtube.com/descriere/arctc",
+            "name": "Arctic Monkeys - Do I Wanna Know",
+            "typeOfSong": [
+                {
+                    "text": "Rock"
+                },
+                {
+                    "text": "Dupstep"
+                },
+                {
+                    "text": "General"
+                }
+            ],
+            "votes": 0
+        },
+        {
+            "WhoVotes": [
+                {
+                    "name": "gaby"
+                }
+            ],
+            "describe": "descriere",
+            "link": "www.youtube.com/des",
+            "name": "Adele - Send My Love",
+            "typeOfSong": [
+                {
+                    "text": "Pop"
+                },
+                {
+                    "text": "General"
+                }
+            ],
+            "votes": 1
+        },
+        {
+            "describe": "descriereeeeeee 1",
+            "link": "www.youtube.com/bldsad/dasda/d",
+            "name": "Melodie1 - test1",
+            "typeOfSong": [
+                {
+                    "text": "Pop"
+                },
+                {
+                    "text": "Rock"
+                },
+                {
+                    "text": "General"
+                }
+            ],
+            "votes": 0
+        },
+        {
+            "describe": "descriere2",
+            "link": "www.youtube.com/a-2_a/piesa",
+            "name": "Melodiee2- t",
+            "typeOfSong": [
+                {
+                    "text": "Dupstep"
+                },
+                {
+                    "text": "Clasic"
+                },
+                {
+                    "text": "General"
+                }
+            ],
+            "votes": 0
+        }
+    ],
+    "users": [
+        {
+            "admin": 1,
+            "logged": 0,
+            "number_of_votes": 0,
+            "password": "tudor",
+            "username": "tudor",
+            "voting_right": 1
+        },
+        {
+            "admin": 1,
+            "logged": 0,
+            "number_of_votes": 0,
+            "password": "gaby",
+            "username": "gaby",
+            "voting_right": 1
+        },
+        {
+            "admin": 0,
+            "logged": 0,
+            "number_of_votes": 0,
+            "password": "user1",
+            "username": "user1",
+            "voting_right": 1
+        },
+        {
+            "admin": 0,
+            "logged": 0,
+            "number_of_votes": 0,
+            "password": "user2",
+            "username": "user2",
+            "voting_right": 1
+        },
+        {
+            "admin": 1,
+            "logged": 0,
+            "number_of_votes": 0,
+            "password": "user3",
+            "username": "user3",
+            "voting_right": 1
+        }
+    ]
+}
