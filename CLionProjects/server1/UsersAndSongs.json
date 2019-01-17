@@ -39,45 +39,6 @@
         {
             "comments": [
                 {
-                    "name": "tudor",
-                    "text": "COMANTARIUUUU LUUUUNG"
-                }
-            ],
-            "describe": "Plec pe marte descriere",
-            "link": "www.youtube.com/song",
-            "name": "Smiley - Plec pe marte",
-            "typeOfSong": [
-                {
-                    "text": "Pop"
-                },
-                {
-                    "text": "General"
-                }
-            ],
-            "votes": 0
-        },
-        {
-            "WhoVotes": [
-                {
-                    "name": "tudor"
-                }
-            ],
-            "describe": "Panda panda panda",
-            "link": "youtube.com/panda/panda/2",
-            "name": "Designer - Panda",
-            "typeOfSong": [
-                {
-                    "text": "Hip-Hop"
-                },
-                {
-                    "text": "General"
-                }
-            ],
-            "votes": 1
-        },
-        {
-            "comments": [
-                {
                     "name": "gaby",
                     "text": "Receeee e foarte receee"
                 }
@@ -97,25 +58,6 @@
                 }
             ],
             "votes": 0
-        },
-        {
-            "WhoVotes": [
-                {
-                    "name": "gaby"
-                }
-            ],
-            "describe": "descriere",
-            "link": "www.youtube.com/des",
-            "name": "Adele - Send My Love",
-            "typeOfSong": [
-                {
-                    "text": "Pop"
-                },
-                {
-                    "text": "General"
-                }
-            ],
-            "votes": 1
         }
     ],
     "users": [
@@ -166,6 +108,13 @@
             "logged": 0,
             "password": "hman2",
             "username": "hman2",
+            "voting_right": 1
+        },
+        {
+            "admin": 0,
+            "logged": 1,
+            "password": "hagi",
+            "username": "hagi",
             "voting_right": 1
         }
     ]

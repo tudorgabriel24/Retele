@@ -291,6 +291,9 @@ int main(int argc, char *argv[]) {
                 perror("[client]Eroare la read() de la server.\n");
                 return errno;
             }
+            if(OK_vot==1) cout<<"Vot acceptat!"<<endl;
+            else cout<<"Vot respins!(a-ti mai votat odata aceasta melodie sau un admin a sters melodia intre timp)";
+
         } else if (comanda2 == 3) {
             int gen, Len, vSongs[100];
             char TopSongs[100][255];
@@ -326,6 +329,7 @@ int main(int argc, char *argv[]) {
                 return errno;
             }
             cout << endl << "TOP:" << endl;
+            if(Len==0) cout<<"Nu exista melodii!"<<endl;
             for (int i = 1; i <= Len; i++)
                 cout << i << ". " << TopSongs[i] << "- voturi: " << vSongs[i] << endl;
         } else if (comanda2 == 4) {
@@ -368,6 +372,13 @@ int main(int argc, char *argv[]) {
                 perror("[client]Eroare la write() spre server (comment).\n");
                 return errno;
             }
+            int OK_post=0;
+            if (read(sd, &OK_post, sizeof(int)) < 0) {
+                perror("[client]Eroare la read() de la server.\n");
+                return errno;
+            }
+            if(OK_post==1) cout<<"Comentariul a fost postat!"<<endl;
+            else cout<<"Comentariul nu a putut fi postat!"<<endl;
 
         } else if (comanda2 == 5) {
             int nrOfSongs = 0, number;
@@ -390,78 +401,78 @@ int main(int argc, char *argv[]) {
                 perror("[client]Eroare la write() spre server (number2).\n");
                 return errno;
             }
-            char nameSong[255], describeSong[1001], linkSong[255], whoVotes[100][15];
-            char TextComments[100][500], NameComments[100][15], NumberOfTypes[8][8];
-            int nrOfVotes, nrOfComments, nrOfTypes;
-            bzero(nameSong, 255);
-            bzero(describeSong, 1001);
-            bzero(linkSong, 255);
-            bzero(whoVotes, 1500);
-            bzero(TextComments, 50000);
-            bzero(NameComments, 1500);
-            bzero(NumberOfTypes, 64);
+                char nameSong[255], describeSong[1001], linkSong[255], whoVotes[100][15];
+                char TextComments[100][500], NameComments[100][15], NumberOfTypes[8][8];
+                int nrOfVotes, nrOfComments, nrOfTypes;
+                bzero(nameSong, 255);
+                bzero(describeSong, 1001);
+                bzero(linkSong, 255);
+                bzero(whoVotes, 1500);
+                bzero(TextComments, 50000);
+                bzero(NameComments, 1500);
+                bzero(NumberOfTypes, 64);
 
-            // primeste de la server
-            if (read(sd, &nameSong, sizeof(char) * 255) < 0) {
-                perror("[client]Eroare la read() de la server.\n");
-                return errno;
-            }
-            if (read(sd, &describeSong, sizeof(char) * 1001) < 0) {
-                perror("[client]Eroare la read() de la server.\n");
-                return errno;
-            }
-            if (read(sd, &linkSong, sizeof(char) * 255) < 0) {
-                perror("[client]Eroare la read() de la server.\n");
-                return errno;
-            }
-            if (read(sd, &nrOfVotes, sizeof(int)) < 0) {
-                perror("[client]Eroare la read() de la server.\n");
-                return errno;
-            }
-            if (read(sd, &whoVotes, sizeof(char) * 1500) < 0) {
-                perror("[client]Eroare la read() de la server.\n");
-                return errno;
-            }
-            if (read(sd, &nrOfComments, sizeof(int)) < 0) {
-                perror("[client]Eroare la read() de la server.\n");
-                return errno;
-            }
-            if (read(sd, &TextComments, sizeof(char) * 50000) < 0) {
-                perror("[client]Eroare la read() de la server.\n");
-                return errno;
-            }
-            if (read(sd, &NameComments, sizeof(char) * 1500) < 0) {
-                perror("[client]Eroare la read() de la server.\n");
-                return errno;
-            }
-            if (read(sd, &nrOfTypes, sizeof(int)) < 0) {
-                perror("[client]Eroare la read() de la server.\n");
-                return errno;
-            }
-            if (read(sd, &NumberOfTypes, sizeof(char) * 64) < 0) {
-                perror("[client]Eroare la read() de la server.\n");
-                return errno;
-            }
-
-            cout << endl;
-            cout << "Numele melodiei: " << nameSong << endl;
-            cout << "Descriere: " << describeSong << endl;
-            cout << "Link: " << linkSong << endl;
-            cout << "Numar de voturi: " << nrOfVotes << endl;
-            if (nrOfVotes != 0) cout << "Userii care au votat: ";
-            for (int i = 1; i <= nrOfVotes; i++) cout << whoVotes[i] << " ";
-            if (nrOfVotes != 0) cout << endl;
-            cout << "Gen muzical: ";
-            for (int i = 1; i < nrOfTypes; i++) cout << NumberOfTypes[i] << " ";
-            cout << endl;
-            cout << "Numar de comentarii: " << nrOfComments << endl;
-            if (nrOfComments != 0) {
-                cout << "Comentarii:" << endl;
-                for (int i = 1; i <= nrOfComments; i++) {
-                    cout<<"User: "<<NameComments[i]<<endl;
-                    cout<<"Text: "<<TextComments[i]<<endl;
+                // primeste de la server
+                if (read(sd, &nameSong, sizeof(char) * 255) < 0) {
+                    perror("[client]Eroare la read() de la server.\n");
+                    return errno;
                 }
-            }
+                if (read(sd, &describeSong, sizeof(char) * 1001) < 0) {
+                    perror("[client]Eroare la read() de la server.\n");
+                    return errno;
+                }
+                if (read(sd, &linkSong, sizeof(char) * 255) < 0) {
+                    perror("[client]Eroare la read() de la server.\n");
+                    return errno;
+                }
+                if (read(sd, &nrOfVotes, sizeof(int)) < 0) {
+                    perror("[client]Eroare la read() de la server.\n");
+                    return errno;
+                }
+                if (read(sd, &whoVotes, sizeof(char) * 1500) < 0) {
+                    perror("[client]Eroare la read() de la server.\n");
+                    return errno;
+                }
+                if (read(sd, &nrOfComments, sizeof(int)) < 0) {
+                    perror("[client]Eroare la read() de la server.\n");
+                    return errno;
+                }
+                if (read(sd, &TextComments, sizeof(char) * 50000) < 0) {
+                    perror("[client]Eroare la read() de la server.\n");
+                    return errno;
+                }
+                if (read(sd, &NameComments, sizeof(char) * 1500) < 0) {
+                    perror("[client]Eroare la read() de la server.\n");
+                    return errno;
+                }
+                if (read(sd, &nrOfTypes, sizeof(int)) < 0) {
+                    perror("[client]Eroare la read() de la server.\n");
+                    return errno;
+                }
+                if (read(sd, &NumberOfTypes, sizeof(char) * 64) < 0) {
+                    perror("[client]Eroare la read() de la server.\n");
+                    return errno;
+                }
+
+                cout << endl;
+                cout << "Numele melodiei: " << nameSong << endl;
+                cout << "Descriere: " << describeSong << endl;
+                cout << "Link: " << linkSong << endl;
+                cout << "Numar de voturi: " << nrOfVotes << endl;
+                if (nrOfVotes != 0) cout << "Userii care au votat: ";
+                for (int i = 1; i <= nrOfVotes; i++) cout << whoVotes[i] << " ";
+                if (nrOfVotes != 0) cout << endl;
+                cout << "Gen muzical: ";
+                for (int i = 1; i < nrOfTypes; i++) cout << NumberOfTypes[i] << " ";
+                cout << endl;
+                cout << "Numar de comentarii: " << nrOfComments << endl;
+                if (nrOfComments != 0) {
+                    cout << "Comentarii:" << endl;
+                    for (int i = 1; i <= nrOfComments; i++) {
+                        cout << "User: " << NameComments[i] << endl;
+                        cout << "Text: " << TextComments[i] << endl;
+                    }
+                }
         }
         else if(comanda2==7)
         {
